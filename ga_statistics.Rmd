@@ -6,20 +6,15 @@ fig_height: 8
 ---
 
 
-# Hypervolume Analysis
-
-
 ```{r}
 require(data.table)
-file1 <- read.csv("10_Knapsack_Runs/10kp_200GenAllRuns.csv")
-file2 <- read.csv("5_Knapsack_Runs/5kp_200GenAllRuns.csv")
-file3 <- read.csv("3_Knapsack_Runs/3kp_200GenAllRuns.csv")
-
-three_kp <- rbind(file1, file2, file3)
-#three_kp<- three_kp[three_kp$instance_name %like% 'r_300', ]
-
+files <- list.files(path="test_results", pattern="*.csv", full.names=TRUE, recursive=FALSE)
+three_kp <- read.csv(files[1])
+for(i in 2:length(files)){
+  data_file <- read.csv(files[i])
+  three_kp <- rbind(three_kp, data_file)
+}
 three_kp$block <- 0
-
 knapsack_count = c(3,5,10)
 unique_instances = unique(three_kp$instance_name)
 block_count = 3*length(unique_instances)
@@ -29,17 +24,28 @@ colnames(block_matrix) <- unique_instances
 for (i in 1:nrow(three_kp)){
   three_kp[i, "block"] <- block_matrix[toString(three_kp[i,"n_kp"]), three_kp[i,"instance_name"]]
 }
+```
 
-hv_pop <- data.frame(three_kp['pop_size'], three_kp['hypervolume'])
-hv_mut <- data.frame(three_kp['mut_rate'], three_kp['hypervolume'])
+subsetting data:
+```{r}
+require(data.table)
+#three_kp <- three_kp[three_kp$n_kp == 3,]
+#three_kp <- three_kp[three_kp$n_kp == 5,]
+#three_kp <- three_kp[three_kp$n_kp == 10,]
+#three_kp <- three_kp[three_kp$instance_name %like% 'r_100',]
+#three_kp <- three_kp[three_kp $instance_name %like% 'r_200',]
+three_kp <- three_kp[three_kp $instance_name %like% 'r_300',]
+three_kp
 ```
 
 
 ```{r}
+hv_pop <- data.frame(three_kp['pop_size'], three_kp['mean_f3'])
 plot(hv_pop)
 ```
 
 ```{r}
+hv_mut <- data.frame(three_kp['mut_rate'], three_kp['mean_f3'])
 plot(hv_mut)
 ```
 
@@ -47,26 +53,26 @@ plot(hv_mut)
 boxplot(hypervolume~mut_rate, data = three_kp)
 ```
 ```{r}
-boxplot(hypervolume~pop_size, data = three_kp)
+boxplot(mean_f1~pop_size, data = three_kp)
 
 ```
 
 
 ```{r}
-average_hypervolume = c(0,0,0,0,0,0,0,0,0)
+average_mean_f1 = c(0,0,0,0,0,0,0,0,0)
 mut_rates = c(.1,.2,.3,.4,.5,.6,.7,.8,.9)
 for (i in 1:9){
-  average_hypervolume[i] = mean(three_kp[three_kp$mut_rate == mut_rates[i], ][['hypervolume']])
+  average_mean_f1[i] = mean(three_kp[three_kp$mut_rate == mut_rates[i], ][['hypervolume']])
 }
-plot(mut_rates, average_hypervolume)
+plot(mut_rates, average_mean_f1)
 ```
 ```{r}
-average_hypervolume = c(0,0,0,0)
+average_mean_f1 = c(0,0,0,0)
 pop_sizes = c(100,150,200,250)
 for (i in 1:4){
-  average_hypervolume[i] = mean(three_kp[three_kp$pop_size == pop_sizes[i], ][['hypervolume']])
+  average_mean_f1[i] = mean(three_kp[three_kp$pop_size == pop_sizes[i], ][['hypervolume']])
 }
-plot(pop_sizes, average_hypervolume)
+plot(pop_sizes, average_mean_f1)
 ```
 
 
