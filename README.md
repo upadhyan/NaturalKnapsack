@@ -1,1 +1,2 @@
 # NaturalKnapsack
+The file `QKP Evolutionary Algorithm.pynb` contains all the code necessary to run and test our EA. The file `ga_statistics.Rmd` contains all the statistical testing done to find the optimal parameters. 
