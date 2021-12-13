@@ -34,7 +34,7 @@ require(data.table)
 #three_kp <- three_kp[three_kp$n_kp == 10,]
 #three_kp <- three_kp[three_kp$instance_name %like% 'r_100',]
 #three_kp <- three_kp[three_kp $instance_name %like% 'r_200',]
-three_kp <- three_kp[three_kp $instance_name %like% 'r_300',]
+#three_kp <- three_kp[three_kp $instance_name %like% 'r_300',]
 three_kp
 ```
 
@@ -62,7 +62,7 @@ boxplot(mean_f1~pop_size, data = three_kp)
 average_mean_f1 = c(0,0,0,0,0,0,0,0,0)
 mut_rates = c(.1,.2,.3,.4,.5,.6,.7,.8,.9)
 for (i in 1:9){
-  average_mean_f1[i] = mean(three_kp[three_kp$mut_rate == mut_rates[i], ][['hypervolume']])
+  average_mean_f1[i] = mean(three_kp[three_kp$mut_rate == mut_rates[i], ][['mean_f3']])
 }
 plot(mut_rates, average_mean_f1)
 ```
@@ -70,7 +70,7 @@ plot(mut_rates, average_mean_f1)
 average_mean_f1 = c(0,0,0,0)
 pop_sizes = c(100,150,200,250)
 for (i in 1:4){
-  average_mean_f1[i] = mean(three_kp[three_kp$pop_size == pop_sizes[i], ][['hypervolume']])
+  average_mean_f1[i] = mean(three_kp[three_kp$pop_size == pop_sizes[i], ][['mean_f3']])
 }
 plot(pop_sizes, average_mean_f1)
 ```
@@ -85,9 +85,9 @@ three_kp <- within(three_kp,{
   block <- factor(block)
 })
 
-three_all_mut_hv <-aov(hypervolume~block+mut_rate, data = three_kp)
-three_all_pop_hv <-aov(hypervolume~block+pop_size, data = three_kp)
-three_all_two_interacting_hv <-aov(hypervolume~block+pop_size*mut_rate, data = three_kp)
+three_all_mut_hv <-aov(mean_f3~block+mut_rate, data = three_kp)
+three_all_pop_hv <-aov(mean_f3~block+pop_size, data = three_kp)
+three_all_two_interacting_hv <-aov(mean_f3~block+pop_size*mut_rate, data = three_kp)
 print(summary(three_all_mut_hv))
 print(summary(three_all_pop_hv))
 print(summary(three_all_two_interacting_hv))
